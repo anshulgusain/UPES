@@ -5,21 +5,15 @@ import { FileText, CheckCircle, Clock, XCircle, Upload, Download, Eye } from 'lu
 
 const statusConfig = {
   verified: { icon: CheckCircle, color: '#059669', bg: '#ecfdf5', label: 'Verified' },
-  pending: { icon: Clock, color: '#f97316', bg: '#fff7ed', label: 'Pending' },
-  rejected: { icon: XCircle, color: '#dc2626', bg: '#fef2f2', label: 'Rejected' },
+  pending:  { icon: Clock,       color: '#f97316', bg: '#fff7ed', label: 'Pending'  },
+  rejected: { icon: XCircle,     color: '#dc2626', bg: '#fef2f2', label: 'Rejected' },
 };
-
-const typeIcons = {
-  'Identity Proof': '🪪',
-  'Academic': '📄',
-  'Health': '🏥',
-  'Category Proof': '📋',
-};
+const typeEmoji = { 'Identity Proof':'🪪', 'Academic':'📄', 'Health':'🏥', 'Category Proof':'📋' };
 
 export default function Documents() {
   const [documents, setDocuments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
+  const [loading, setLoading]     = useState(true);
+  const [filter, setFilter]       = useState('All');
 
   useEffect(() => {
     getDocuments()
@@ -28,133 +22,146 @@ export default function Documents() {
       .finally(() => setLoading(false));
   }, []);
 
-  const types = ['All', ...new Set(documents.map(d => d.type))];
+  const types    = ['All', ...new Set(documents.map(d => d.type))];
   const filtered = filter === 'All' ? documents : documents.filter(d => d.type === filter);
-  const verified = documents.filter(d => d.status === 'verified').length;
 
   return (
     <Layout title="My Documents">
-      {/* Summary bar */}
-      <div style={styles.summaryBar}>
+      <style>{`
+        .docs-summary {
+          display: grid; grid-template-columns: repeat(4,1fr);
+          gap: 14px; background: white; border-radius: 12px;
+          padding: 18px; margin-bottom: 18px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .docs-sum-item { text-align: center; }
+        .docs-sum-val  { font-size: 26px; font-weight: 800; }
+        .docs-sum-lbl  { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+        .docs-filters { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+        .docs-filter-btn {
+          padding:6px 14px; border-radius:20px; border:1.5px solid #e2e8f0;
+          background:white; cursor:pointer; font-size:12px; font-weight:500;
+          color:#64748b; font-family:inherit; transition:all 0.15s;
+          white-space:nowrap;
+        }
+        .docs-filter-btn.active {
+          background:#4f46e5; border-color:#4f46e5; color:white; font-weight:700;
+        }
+
+        .docs-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+          gap: 14px;
+        }
+        .doc-card {
+          background: white; border-radius: 12px; padding: 18px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+          border: 1.5px solid #f1f5f9;
+        }
+        .doc-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+        .doc-emoji    { font-size:26px; line-height:1; }
+        .doc-status   {
+          display:flex; align-items:center; gap:3px;
+          padding:3px 7px; border-radius:20px; font-size:10px; font-weight:700;
+        }
+        .doc-name { margin:0 0 3px; font-size:14px; font-weight:700; color:#1e293b; }
+        .doc-type { margin:0 0 5px; font-size:11px; color:#94a3b8; }
+        .doc-date { margin:0 0 12px; font-size:11px; color:#64748b; }
+        .doc-btns { display:flex; gap:7px; }
+        .doc-btn  {
+          flex:1; display:flex; align-items:center; justify-content:center; gap:4px;
+          padding:6px; border-radius:7px; border:1.5px solid #e2e8f0;
+          background:white; cursor:pointer; font-size:11px; font-weight:600; color:#374151;
+          font-family:inherit;
+        }
+
+        .upload-card {
+          background:white; border-radius:12px; padding:18px;
+          border:2px dashed #e2e8f0;
+          display:flex; flex-direction:column;
+          align-items:center; justify-content:center;
+          gap:8px; min-height:160px;
+        }
+        .upload-txt { margin:0; font-size:13px; color:#94a3b8; }
+        .upload-btn {
+          padding:7px 18px; background:#f8fafc; border:1.5px solid #e2e8f0;
+          border-radius:7px; cursor:pointer; font-size:12px; font-weight:600;
+          color:#374151; font-family:inherit;
+        }
+        .docs-loading { text-align:center; padding:60px; color:#94a3b8; }
+
+        @media (max-width: 600px) {
+          .docs-summary { grid-template-columns: repeat(2,1fr); gap:10px; padding:14px; }
+          .docs-sum-val  { font-size:20px; }
+          .docs-grid    { grid-template-columns: repeat(2,1fr); gap:10px; }
+          .doc-card     { padding:14px; }
+          .doc-name     { font-size:13px; }
+        }
+        @media (max-width: 380px) {
+          .docs-grid { grid-template-columns: 1fr; }
+        }
+      `}</style>
+
+      {/* Summary */}
+      <div className="docs-summary">
         {[
-          { label: 'Total Documents', value: documents.length, color: '#4f46e5' },
-          { label: 'Verified', value: verified, color: '#059669' },
-          { label: 'Pending', value: documents.filter(d => d.status === 'pending').length, color: '#f97316' },
-          { label: 'Rejected', value: documents.filter(d => d.status === 'rejected').length, color: '#dc2626' },
+          { label:'Total',    value: documents.length,                                      color:'#4f46e5' },
+          { label:'Verified', value: documents.filter(d=>d.status==='verified').length,     color:'#059669' },
+          { label:'Pending',  value: documents.filter(d=>d.status==='pending').length,      color:'#f97316' },
+          { label:'Rejected', value: documents.filter(d=>d.status==='rejected').length,     color:'#dc2626' },
         ].map(({ label, value, color }) => (
-          <div key={label} style={styles.summaryItem}>
-            <div style={{ ...styles.summaryVal, color }}>{value}</div>
-            <div style={styles.summaryLabel}>{label}</div>
+          <div key={label} className="docs-sum-item">
+            <div className="docs-sum-val" style={{ color }}>{value}</div>
+            <div className="docs-sum-lbl">{label}</div>
           </div>
         ))}
       </div>
 
-      {/* Filter tabs */}
-      <div style={styles.filterRow}>
+      {/* Filters */}
+      <div className="docs-filters">
         {types.map(t => (
-          <button
-            key={t}
-            onClick={() => setFilter(t)}
-            style={{ ...styles.filterBtn, ...(filter === t ? styles.filterBtnActive : {}) }}
-          >
+          <button key={t} onClick={() => setFilter(t)}
+            className={`docs-filter-btn${filter===t?' active':''}`}>
             {t}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div style={styles.loading}>Loading documents…</div>
+        <div className="docs-loading">Loading documents…</div>
       ) : (
-        <div style={styles.docsGrid}>
+        <div className="docs-grid">
           {filtered.map(doc => {
             const { icon: StatusIcon, color, bg, label } = statusConfig[doc.status] || statusConfig.pending;
             return (
-              <div key={doc._id} style={styles.docCard}>
-                <div style={styles.docTop}>
-                  <div style={styles.docEmoji}>{typeIcons[doc.type] || '📁'}</div>
-                  <div style={{ ...styles.statusBadge, background: bg, color }}>
-                    <StatusIcon size={12} />
+              <div key={doc._id} className="doc-card">
+                <div className="doc-card-top">
+                  <div className="doc-emoji">{typeEmoji[doc.type] || '📁'}</div>
+                  <div className="doc-status" style={{ background:bg, color }}>
+                    <StatusIcon size={11} />
                     {label}
                   </div>
                 </div>
-                <h3 style={styles.docName}>{doc.name}</h3>
-                <p style={styles.docType}>{doc.type}</p>
-                <p style={styles.docDate}>
-                  Uploaded: {new Date(doc.uploadedAt).toLocaleDateString('en-IN', {
-                    day: 'numeric', month: 'short', year: 'numeric'
-                  })}
+                <h3 className="doc-name">{doc.name}</h3>
+                <p className="doc-type">{doc.type}</p>
+                <p className="doc-date">
+                  {new Date(doc.uploadedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
                 </p>
-                <div style={styles.docActions}>
-                  <button style={styles.actionBtn}>
-                    <Eye size={14} /> View
-                  </button>
-                  <button style={styles.actionBtn}>
-                    <Download size={14} /> Download
-                  </button>
+                <div className="doc-btns">
+                  <button className="doc-btn"><Eye size={13}/> View</button>
+                  <button className="doc-btn"><Download size={13}/> Save</button>
                 </div>
               </div>
             );
           })}
-
-          {/* Upload placeholder card */}
-          <div style={styles.uploadCard}>
-            <Upload size={32} color="#cbd5e1" />
-            <p style={styles.uploadText}>Upload New Document</p>
-            <button style={styles.uploadBtn}>Choose File</button>
+          <div className="upload-card">
+            <Upload size={28} color="#cbd5e1"/>
+            <p className="upload-txt">Upload Document</p>
+            <button className="upload-btn">Choose File</button>
           </div>
         </div>
       )}
     </Layout>
   );
 }
-
-const styles = {
-  summaryBar: {
-    display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '16px',
-    background: 'white', borderRadius: '14px', padding: '20px',
-    marginBottom: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-  },
-  summaryItem: { textAlign: 'center' },
-  summaryVal: { fontSize: '28px', fontWeight: 800 },
-  summaryLabel: { fontSize: '12px', color: '#64748b', fontWeight: 500 },
-  filterRow: { display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' },
-  filterBtn: {
-    padding: '7px 16px', borderRadius: '20px', border: '1.5px solid #e2e8f0',
-    background: 'white', cursor: 'pointer', fontSize: '13px', fontWeight: 500, color: '#64748b',
-  },
-  filterBtnActive: { background: '#4f46e5', borderColor: '#4f46e5', color: 'white', fontWeight: 700 },
-  loading: { textAlign: 'center', padding: '60px', color: '#94a3b8' },
-  docsGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: '16px',
-  },
-  docCard: {
-    background: 'white', borderRadius: '14px', padding: '20px',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-    border: '1.5px solid #f1f5f9', transition: 'box-shadow 0.15s',
-  },
-  docTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' },
-  docEmoji: { fontSize: '28px', lineHeight: 1 },
-  statusBadge: {
-    display: 'flex', alignItems: 'center', gap: '4px',
-    padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 700,
-  },
-  docName: { margin: '0 0 4px', fontSize: '15px', fontWeight: 700, color: '#1e293b' },
-  docType: { margin: '0 0 6px', fontSize: '12px', color: '#94a3b8' },
-  docDate: { margin: '0 0 14px', fontSize: '12px', color: '#64748b' },
-  docActions: { display: 'flex', gap: '8px' },
-  actionBtn: {
-    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
-    padding: '7px', borderRadius: '8px', border: '1.5px solid #e2e8f0',
-    background: 'white', cursor: 'pointer', fontSize: '12px', fontWeight: 600, color: '#374151',
-  },
-  uploadCard: {
-    background: 'white', borderRadius: '14px', padding: '20px',
-    border: '2px dashed #e2e8f0', display: 'flex', flexDirection: 'column',
-    alignItems: 'center', justifyContent: 'center', gap: '10px', minHeight: '180px',
-  },
-  uploadText: { margin: 0, fontSize: '14px', color: '#94a3b8', fontWeight: 500 },
-  uploadBtn: {
-    padding: '8px 20px', background: '#f8fafc', border: '1.5px solid #e2e8f0',
-    borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, color: '#374151',
-  },
-};
