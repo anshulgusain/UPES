@@ -153,7 +153,7 @@ export default function Dashboard() {
         <CheckCircle size={18} color="#2563eb" style={{ flexShrink:0 }}/>
         <div>
           <span style={{ fontSize:'13px', fontWeight:700, color:'#1d4ed8' }}>Welcome to UPES! You are a new joinee. </span>
-          <span style={{ fontSize:'13px', color:'#3b82f6' }}>Attendance & CGPA will appear once your 1st semester begins in May 2025.</span>
+          <span style={{ fontSize:'13px', color:'#3b82f6' }}>Attendance & CGPA will appear once your 1st semester begins in May 2026.</span>
         </div>
       </div>
 
@@ -219,9 +219,9 @@ export default function Dashboard() {
         <h3 className="dash-card-title">📚 MBA Curriculum — All Semesters</h3>
         <div className="subjects-grid">
           {[
-            { sem:'Semester 1', note:'May 2025 • Current', color:'#4f46e5', bg:'#eef2ff',
+            { sem:'Semester 1', note:'May 2026 • Current', color:'#4f46e5', bg:'#eef2ff',
               subjects:['Organizational Behaviour','Marketing Management','Managerial Economics','Accounting for Managers','Quantitative Techniques','Business Communication','Introduction to Supply Chain','Operations Management','Business Environment'] },
-            { sem:'Semester 2', note:'Nov 2025', color:'#0891b2', bg:'#e0f2fe',
+            { sem:'Semester 2', note:'Nov 2026', color:'#0891b2', bg:'#e0f2fe',
               subjects:['Logistics Management','Inventory Management','Procurement & Sourcing','Transportation Management','Warehouse Management','Supply Chain Analytics','Research Methodology'] },
             { sem:'Semester 3', note:'May 2026', color:'#7c3aed', bg:'#f5f3ff',
               subjects:['Demand Planning & Forecasting','Lean Supply Chain','Global Logistics / International Trade','Supply Chain Strategy','Electives (Maritime / Energy Supply Chain)'] },
@@ -258,7 +258,7 @@ export default function Dashboard() {
             ['Email',       student?.email],
             ['Phone',       student?.phone],
             ['CGPA',        'Will update after Sem 1 exams'],
-            ['Attendance',  'Classes begin May 2025'],
+            ['Attendance',  'Classes begin May 2026'],
           ].map(([k,v]) => (
             <div key={k} className="info-row">
               <span className="info-key">{k}</span>
