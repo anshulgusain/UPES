@@ -5,7 +5,7 @@ import { FileText, Receipt, GraduationCap, BookOpen,
 import { useNavigate } from 'react-router-dom';
 
 const notices = [
-  { text: '1st Semester classes commence from May 2025', icon: CheckCircle, color: '#059669' },
+  { text: '1st Semester classes commence from April 2026', icon: CheckCircle, color: '#059669' },
   { text: 'Orientation Program scheduled before semester start — check email', icon: AlertCircle, color: '#f97316' },
   { text: 'Submit pending Character Certificate before 30th April', icon: Clock, color: '#ef4444' },
 ];
