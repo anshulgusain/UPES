@@ -133,7 +133,7 @@ export default function Dashboard() {
           { icon:FileText,    label:'Documents',     value:'8',          sub:'7 verified',          color:'#4f46e5', bg:'#eef2ff' },
           { icon:Receipt,     label:'Fee Status',    value:'Paid ✓',     sub:'₹5,60,500 cleared',   color:'#059669', bg:'#ecfdf5' },
           { icon:BookOpen,    label:'Subjects',      value:'9',          sub:'Sem 1 subjects',      color:'#0891b2', bg:'#e0f2fe' },
-          { icon:GraduationCap, label:'Semester',    value:'1st',        sub:'Starts May 2025',     color:'#7c3aed', bg:'#f5f3ff' },
+          { icon:GraduationCap, label:'Semester',    value:'1st',        sub:'Starts 4th April 2026',     color:'#7c3aed', bg:'#f5f3ff' },
         ].map(({ icon:Icon, label, value, sub, color, bg }) => (
           <div key={label} className="dash-stat">
             <div className="dash-stat-icon" style={{ background:bg }}>
